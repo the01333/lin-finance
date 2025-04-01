@@ -45,4 +45,8 @@ public class LoginController {
         return ApiResponse.success(memberLoginService.getClientId());
     }
 
+    /**
+     * 获取短信验证码
+     */
+
 }
