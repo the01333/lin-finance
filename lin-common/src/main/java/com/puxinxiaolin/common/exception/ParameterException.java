@@ -1,6 +1,7 @@
 package com.puxinxiaolin.common.exception;
 
 import com.puxinxiaolin.common.constant.ApiResponseCode;
+import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Map;
  * @Author: YCcLin
  * @Date: 2025/3/31 20:35
  */
+@Getter
 public class ParameterException extends BaseException {
 
     private Map<String, String> fieldErrors;
@@ -32,10 +34,6 @@ public class ParameterException extends BaseException {
         Map<String, String> fieldErrors = new HashMap<>();
         fieldErrors.put(key, value);
         this.fieldErrors = fieldErrors;
-    }
-
-    public Map<String, String> getFieldErrors() {
-        return fieldErrors;
     }
 
     public ParameterException(String message, Throwable t) {

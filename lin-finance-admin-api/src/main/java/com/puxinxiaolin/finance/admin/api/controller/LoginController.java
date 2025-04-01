@@ -2,6 +2,7 @@ package com.puxinxiaolin.finance.admin.api.controller;
 
 import com.puxinxiaolin.common.dto.ApiResponse;
 import com.puxinxiaolin.finance.biz.dto.form.GetBase64CodeForm;
+import com.puxinxiaolin.finance.biz.dto.form.GetSmsCodeForm;
 import com.puxinxiaolin.finance.biz.service.MemberLoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -45,8 +46,11 @@ public class LoginController {
         return ApiResponse.success(memberLoginService.getClientId());
     }
 
-    /**
-     * 获取短信验证码
-     */
+    @ApiOperation(value = "获取短信验证码")
+    @GetMapping("/sendSmsCode")
+    public ApiResponse<Void> sendSmsCode(@Validated @ModelAttribute GetSmsCodeForm form) {
+        memberLoginService.sendSmsCode(form);
+        return ApiResponse.success();
+    }
 
 }
