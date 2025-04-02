@@ -26,7 +26,7 @@ public class RegController {
      */
     @ApiOperation(value = "手机号注册")
     @PostMapping("/phoneReg")
-    public ApiResponse<Long> phoneReg(@Validated @ModelAttribute PhoneRegisterForm form) {
+    public ApiResponse<Long> phoneReg(@Validated @RequestBody PhoneRegisterForm form) {
         return ApiResponse.success(memberRegService.phoneReg(form));
     }
 

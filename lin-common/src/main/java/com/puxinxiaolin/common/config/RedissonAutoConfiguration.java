@@ -22,7 +22,7 @@ import javax.annotation.Resource;
  */
 @Configuration
 @ConditionalOnClass(Config.class)
-@EnableConfigurationProperties(RedisProperties.class)
+@EnableConfigurationProperties(RedisProperties.class)  // 交由 Spring 管理，注册成 Bean
 public class RedissonAutoConfiguration {
 
     @Resource
@@ -62,11 +62,8 @@ public class RedissonAutoConfiguration {
         config.setCodec(new JsonJacksonCodec());
         SingleServerConfig serverConfig = config.useSingleServer()
                 .setAddress(redisProperties.getAddress())
-                // 等待节点回复命令的时间，该时间从命令发送成功时开始计时
                 .setTimeout(redisProperties.getTimeout())
-                // 设置对于 master 节点的连接池中连接数最大为 50
                 .setConnectionPoolSize(redisProperties.getConnectionPoolSize())
-                // 连接池的最小空闲连接数，当连接池中的连接数低于此值时，会尝试创建新连接
                 .setConnectionMinimumIdleSize(redisProperties.getConnectionMinimumIdleSize());
 
         if (StringUtils.isNotBlank(redisProperties.getPassword())) {

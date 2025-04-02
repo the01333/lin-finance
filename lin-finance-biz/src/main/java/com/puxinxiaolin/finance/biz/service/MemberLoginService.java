@@ -1,7 +1,9 @@
 package com.puxinxiaolin.finance.biz.service;
 
+import com.puxinxiaolin.common.dto.TokenResponse;
 import com.puxinxiaolin.finance.biz.dto.form.GetBase64CodeForm;
 import com.puxinxiaolin.finance.biz.dto.form.GetSmsCodeForm;
+import com.puxinxiaolin.finance.biz.dto.form.PhonePasswordLoginForm;
 
 public interface MemberLoginService {
 
@@ -45,4 +47,12 @@ public interface MemberLoginService {
      * @return
      */
     Boolean checkSmsCode(String phone, String smsCode, String smsCodeType);
+
+    /**
+     * 手机号密码登录
+     *
+     * @param form
+     * @return
+     */
+    TokenResponse phonePasswordLogin(PhonePasswordLoginForm form);
 }

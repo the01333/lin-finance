@@ -1,18 +1,17 @@
 package com.puxinxiaolin.finance.admin.api.controller;
 
 import com.puxinxiaolin.common.dto.ApiResponse;
+import com.puxinxiaolin.common.dto.TokenResponse;
 import com.puxinxiaolin.finance.biz.dto.form.GetBase64CodeForm;
 import com.puxinxiaolin.finance.biz.dto.form.GetSmsCodeForm;
+import com.puxinxiaolin.finance.biz.dto.form.PhonePasswordLoginForm;
 import com.puxinxiaolin.finance.biz.service.MemberLoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "用户登录模块")
 @RestController
@@ -57,6 +56,18 @@ public class LoginController {
     public ApiResponse<Void> sendSmsCode(@Validated @ModelAttribute GetSmsCodeForm form) {
         memberLoginService.sendSmsCode(form);
         return ApiResponse.success();
+    }
+
+    /**
+     * 手机号密码登录
+     *
+     * @param form
+     * @return
+     */
+    @ApiOperation(value = "手机号密码登录")
+    @PostMapping("/phonePasswordLogin")
+    public ApiResponse<TokenResponse> phonePasswordLogin(@Validated @RequestBody PhonePasswordLoginForm form) {
+        return ApiResponse.success(memberLoginService.phonePasswordLogin(form));
     }
 
 }

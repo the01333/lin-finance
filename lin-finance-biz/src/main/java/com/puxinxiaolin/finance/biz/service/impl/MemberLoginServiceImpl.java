@@ -2,25 +2,37 @@ package com.puxinxiaolin.finance.biz.service.impl;
 
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.puxinxiaolin.common.constant.ApiResponseCode;
+import com.puxinxiaolin.common.dto.TokenResponse;
 import com.puxinxiaolin.common.exception.BizException;
 import com.puxinxiaolin.common.exception.ParameterException;
 import com.puxinxiaolin.common.util.DateUtil;
 import com.puxinxiaolin.common.util.MyUtil;
 import com.puxinxiaolin.finance.biz.constant.RedisKeyConstant;
+import com.puxinxiaolin.finance.biz.domain.Member;
 import com.puxinxiaolin.finance.biz.domain.MemberBindPhone;
+import com.puxinxiaolin.finance.biz.dto.AdminDTO;
 import com.puxinxiaolin.finance.biz.dto.form.GetBase64CodeForm;
 import com.puxinxiaolin.finance.biz.dto.form.GetSmsCodeForm;
+import com.puxinxiaolin.finance.biz.dto.form.PhonePasswordLoginForm;
 import com.puxinxiaolin.finance.biz.dto.form.SmsCodeResult;
 import com.puxinxiaolin.finance.biz.enums.SmsCodeEnum;
 import com.puxinxiaolin.finance.biz.service.MemberBindPhoneService;
 import com.puxinxiaolin.finance.biz.service.MemberLoginService;
+import com.puxinxiaolin.finance.biz.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +42,9 @@ import java.util.concurrent.TimeUnit;
 public class MemberLoginServiceImpl implements MemberLoginService {
     final RedisTemplate<String, Object> redisTemplate;
     final MemberBindPhoneService memberBindPhoneService;
+    final PasswordEncoder passwordEncoder;
+    final MemberService memberService;
+    final ObjectMapper objectMapper;
 
     /**
      * 获取客户端 ID
@@ -139,5 +154,41 @@ public class MemberLoginServiceImpl implements MemberLoginService {
         }
 
         return true;
+    }
+
+    /**
+     * 手机号密码登录
+     *
+     * @param form
+     * @return
+     */
+    @Override
+    public TokenResponse phonePasswordLogin(PhonePasswordLoginForm form) {
+        checkBase64Code(form.getClientId(), form.getCode());
+
+        MemberBindPhone memberBindPhone = memberBindPhoneService.getMemberByPhone(form.getPhone());
+        if (Objects.isNull(memberBindPhone) || StringUtils.isBlank(memberBindPhone.getPassword())) {
+            throw new BizException(ApiResponseCode.ACCOUNT_PASSWORD_ERROR.getCode(),
+                    ApiResponseCode.ACCOUNT_PASSWORD_ERROR.getMessage());
+        }
+        if (!passwordEncoder.matches(form.getPassword(), memberBindPhone.getPassword())) {
+            throw new BizException(ApiResponseCode.ACCOUNT_PASSWORD_ERROR.getCode(),
+                    ApiResponseCode.ACCOUNT_PASSWORD_ERROR.getMessage());
+        }
+
+        Member member = memberService.get(memberBindPhone.getMemberId());
+        return loginSuccess(member, form.getClientId());
+    }
+
+    private TokenResponse loginSuccess(Member member, String clientId) {
+        try {
+            AdminDTO adminDTO = new AdminDTO();
+            adminDTO.setId(member.getId());
+            adminDTO.setTenantId(member.getTenantId());
+            adminDTO.setSysRoleIds(objectMapper.readValue(member.getSysRoleIds(), new TypeReference<Set<Long>>() {
+            }));
+        } catch (JsonProcessingException e) {
+
+        }
     }
 }

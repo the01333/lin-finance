@@ -25,6 +25,7 @@ public class RedisProperties {
 
     private int connectionPoolSize = 64;
 
+    // 最小空闲连接数
     private int connectionMinimumIdleSize = 10;
 
     private int slaveConnectionPoolSize = 250;

@@ -7,6 +7,9 @@ package com.puxinxiaolin.common.constant;
  */
 public class CommonConstant {
 
+    // token
+    public static final String TOKEN_CACHE_KEY = "TOKEN:";
+
     // 管理员
     public static final Long ROLE_ADMIN = 1L;
 

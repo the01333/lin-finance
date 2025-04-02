@@ -1,5 +1,7 @@
 package com.puxinxiaolin.finance.biz.service;
 
+import com.puxinxiaolin.finance.biz.domain.Member;
+
 public interface MemberService {
 
     /**
@@ -9,5 +11,13 @@ public interface MemberService {
      * @return
      */
     Long reg(Long tenantId);
+
+    /**
+     * 根据 id 获取用户信息
+     *
+     * @param memberId
+     * @return
+     */
+    Member get(Long memberId);
 
 }
