@@ -40,7 +40,7 @@ public class MemberRegServiceImpl implements MemberRegService {
         }
         memberLoginService.checkSmsCode(form.getPhone(), form.getSmsCode(), SmsCodeEnum.REG.getCode());
 
-        // 分布式锁
+        // 分布式锁，防止同一手机号重复注册
         RLock rLock = redissonClient.getLock(RedisKeyConstant.PHONE_CHANGE + form.getPhone());
         try {
             rLock.lock();

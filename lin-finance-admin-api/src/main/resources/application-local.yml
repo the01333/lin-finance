@@ -22,7 +22,11 @@ spring:
         max-wait: 10000
       # 应用程序关闭时Lettuce 将等待最多 3 秒钟来完成关闭操作。如果超过这个时间仍未完成，则会强制关闭连接。
       shutdown-timeout: 3000
+
 # 日志配置
 logging:
   file:
     name: ../${spring.application.name}/logs/lin-finance-admin-api.log
+
+redisson:
+  address: redis://127.0.0.1:6379

@@ -8,10 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "用户注册模块")
 @RestController
@@ -28,7 +25,7 @@ public class RegController {
      * @return
      */
     @ApiOperation(value = "手机号注册")
-    @GetMapping("/phoneReg")
+    @PostMapping("/phoneReg")
     public ApiResponse<Long> phoneReg(@Validated @ModelAttribute PhoneRegisterForm form) {
         return ApiResponse.success(memberRegService.phoneReg(form));
     }
