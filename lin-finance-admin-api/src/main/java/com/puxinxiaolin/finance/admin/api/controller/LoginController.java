@@ -46,6 +46,12 @@ public class LoginController {
         return ApiResponse.success(memberLoginService.getClientId());
     }
 
+    /**
+     * 获取短信验证码
+     *
+     * @param form
+     * @return
+     */
     @ApiOperation(value = "获取短信验证码")
     @GetMapping("/sendSmsCode")
     public ApiResponse<Void> sendSmsCode(@Validated @ModelAttribute GetSmsCodeForm form) {

@@ -12,4 +12,13 @@ public interface MemberBindPhoneService {
      */
     MemberBindPhone getMemberByPhone(String phone);
 
+    /**
+     * 手机号注册
+     * @param phone
+     * @param memberId
+     * @param password
+     * @return
+     */
+    Boolean reg(String phone, Long memberId, String password);
+
 }

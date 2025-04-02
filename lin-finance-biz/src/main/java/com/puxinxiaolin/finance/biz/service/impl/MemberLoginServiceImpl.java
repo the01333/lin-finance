@@ -52,6 +52,8 @@ public class MemberLoginServiceImpl implements MemberLoginService {
     public String getBase64Code(GetBase64CodeForm form) {
         LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(300, 192, 5, 1000);
         String code = lineCaptcha.getCode();
+        log.info("MemberLoginServiceImpl.getBase64Code.clientId:{}, code:{}", form.getClientId(), code);
+
         // 图形验证码 -> Redis, pattern => GRAPHIC_VERIFICATION_CODE:clientId:code
         redisTemplate.opsForValue()
                 .set(RedisKeyConstant.GRAPHIC_VERIFICATION_CODE + form.getClientId(),
@@ -106,7 +108,8 @@ public class MemberLoginServiceImpl implements MemberLoginService {
      * @param code
      * @return
      */
-    private Boolean checkBase64Code(String clientId, String code) {
+    @Override
+    public Boolean checkBase64Code(String clientId, String code) {
         String key = RedisKeyConstant.GRAPHIC_VERIFICATION_CODE + clientId;
         String value = (String) redisTemplate.opsForValue()
                 .get(key);
@@ -115,6 +118,26 @@ public class MemberLoginServiceImpl implements MemberLoginService {
         if (!code.equalsIgnoreCase(value)) {
             throw new ParameterException("code", "图形验证码错误");
         }
+        return true;
+    }
+
+    /**
+     * 校验短信验证码
+     *
+     * @param phone
+     * @param smsCode
+     * @param smsCodeType
+     * @return
+     */
+    @Override
+    public Boolean checkSmsCode(String phone, String smsCode, String smsCodeType) {
+        String key = RedisKeyConstant.SMS_CODE + smsCodeType + phone;
+        SmsCodeResult smsCodeResult = (SmsCodeResult) redisTemplate.opsForValue().get(key);
+        redisTemplate.delete(key);
+        if (Objects.isNull(smsCodeResult) || !smsCode.equals(smsCodeResult.getCode())) {
+            throw new ParameterException("smsCode", "短信验证码错误，请重新获取验证码");
+        }
+
         return true;
     }
 }

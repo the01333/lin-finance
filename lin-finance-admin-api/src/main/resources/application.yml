@@ -37,7 +37,7 @@ spring:
       matching-strategy: ant_path_matcher  #使用 Ant 风格的路径模式来配置 URL 路径匹配策略
 
 mybatis:
-  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  mapper-locations: classpath*:**/*Mapper.xml
   type-aliases-package: com.puxinxiaolin
   configuration:
     map-underscore-to-camel-case: true
