@@ -34,6 +34,9 @@ public class SecurityConfig {
      */
     private Integer expire = 3600;
 
+    /**
+     * 白名单
+     */
     private List<String> ignores;
 
 }

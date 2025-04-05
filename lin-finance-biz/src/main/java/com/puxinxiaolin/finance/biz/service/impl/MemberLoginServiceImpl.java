@@ -9,16 +9,14 @@ import com.puxinxiaolin.common.constant.ApiResponseCode;
 import com.puxinxiaolin.common.dto.TokenResponse;
 import com.puxinxiaolin.common.exception.BizException;
 import com.puxinxiaolin.common.exception.ParameterException;
+import com.puxinxiaolin.common.service.TokenService;
 import com.puxinxiaolin.common.util.DateUtil;
 import com.puxinxiaolin.common.util.MyUtil;
 import com.puxinxiaolin.finance.biz.constant.RedisKeyConstant;
 import com.puxinxiaolin.finance.biz.domain.Member;
 import com.puxinxiaolin.finance.biz.domain.MemberBindPhone;
 import com.puxinxiaolin.finance.biz.dto.AdminDTO;
-import com.puxinxiaolin.finance.biz.dto.form.GetBase64CodeForm;
-import com.puxinxiaolin.finance.biz.dto.form.GetSmsCodeForm;
-import com.puxinxiaolin.finance.biz.dto.form.PhonePasswordLoginForm;
-import com.puxinxiaolin.finance.biz.dto.form.SmsCodeResult;
+import com.puxinxiaolin.finance.biz.dto.form.*;
 import com.puxinxiaolin.finance.biz.enums.SmsCodeEnum;
 import com.puxinxiaolin.finance.biz.service.MemberBindPhoneService;
 import com.puxinxiaolin.finance.biz.service.MemberLoginService;
@@ -45,6 +43,7 @@ public class MemberLoginServiceImpl implements MemberLoginService {
     final PasswordEncoder passwordEncoder;
     final MemberService memberService;
     final ObjectMapper objectMapper;
+    final TokenService<AdminDTO> adminTokenService;
 
     /**
      * 获取客户端 ID
@@ -180,15 +179,39 @@ public class MemberLoginServiceImpl implements MemberLoginService {
         return loginSuccess(member, form.getClientId());
     }
 
-    private TokenResponse loginSuccess(Member member, String clientId) {
+    @Override
+    public TokenResponse loginSuccess(Member member, String clientId) {
         try {
             AdminDTO adminDTO = new AdminDTO();
             adminDTO.setId(member.getId());
             adminDTO.setTenantId(member.getTenantId());
-            adminDTO.setSysRoleIds(objectMapper.readValue(member.getSysRoleIds(), new TypeReference<Set<Long>>() {
+            adminDTO.setSysRoleIds(objectMapper.readValue(member.getSysRoleIds(),
+                    new TypeReference<Set<Long>>() {
             }));
-        } catch (JsonProcessingException e) {
 
+            adminTokenService.setToken(adminDTO);
+            return adminDTO.getToken();
+        } catch (JsonProcessingException e) {
+            throw new BizException("登录失败", e);
         }
+    }
+
+    /**
+     * 手机号短信登录
+     *
+     * @param form
+     * @return
+     */
+    @Override
+    public TokenResponse phoneSmsCodeLogin(PhoneSmsCodeLoginForm form) {
+        checkSmsCode(form.getPhone(), form.getSmsCode(), SmsCodeEnum.LOGIN.getCode());
+
+        MemberBindPhone memberByPhone = memberBindPhoneService.getMemberByPhone(form.getPhone());
+        if (Objects.isNull(memberByPhone)) {
+            throw new ParameterException("该手机号未注册");
+        }
+
+        Member member = memberService.get(memberByPhone.getMemberId());
+        return loginSuccess(member, form.getClientId());
     }
 }

@@ -2,11 +2,18 @@ package com.puxinxiaolin.finance.biz.service.impl;
 
 import com.puxinxiaolin.common.exception.BizException;
 import com.puxinxiaolin.common.exception.ParameterException;
+import com.puxinxiaolin.finance.biz.config.ObjectConvertor;
 import com.puxinxiaolin.finance.biz.constant.RedisKeyConstant;
 import com.puxinxiaolin.finance.biz.domain.MemberBindPhone;
 import com.puxinxiaolin.finance.biz.dto.form.PhoneRegisterForm;
+import com.puxinxiaolin.finance.biz.dto.vo.GenerateMpRegCodeVo;
 import com.puxinxiaolin.finance.biz.enums.SmsCodeEnum;
 import com.puxinxiaolin.finance.biz.service.*;
+import com.puxinxiaolin.wx.config.WxConfig;
+import com.puxinxiaolin.wx.dto.AccessTokenResult;
+import com.puxinxiaolin.wx.dto.MpQrCodeCreateRequest;
+import com.puxinxiaolin.wx.dto.MpQrCodeCreateResult;
+import com.puxinxiaolin.wx.service.WXService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -26,6 +33,9 @@ public class MemberRegServiceImpl implements MemberRegService {
     final TransactionTemplate transactionTemplate;
     final TenantService tenantService;
     final MemberService memberService;
+    final WXService wxService;
+    final WxConfig wxConfig;
+    final ObjectConvertor objectConvertor;
 
     /**
      * 手机号注册
@@ -51,6 +61,7 @@ public class MemberRegServiceImpl implements MemberRegService {
                 throw new BizException("该手机号已注册");
             }
 
+            // 手动事务，减小锁力度
             Long memberId = transactionTemplate.execute(transactionStatus -> {
                 Long tenantId = tenantService.add();
                 Long id = memberService.reg(tenantId);
@@ -73,4 +84,25 @@ public class MemberRegServiceImpl implements MemberRegService {
         }
     }
 
+    /**
+     * 生成微信公众号二维码（关注注册）
+     *
+     * @param clientId
+     * @return
+     */
+    @Override
+    public GenerateMpRegCodeVo generateMpRegCode(String clientId) {
+        AccessTokenResult result = wxService.getMpAccessToken(wxConfig.getMp().getAppId(),
+                wxConfig.getMp().getSecret());
+
+        MpQrCodeCreateRequest request = new MpQrCodeCreateRequest();
+        request.setExpireSeconds(wxConfig.getMp().getCodeExpire());
+        request.setActionName("QR_STR_SCENE");
+        request.setActionInfo(request.new ActionInfo());
+        request.getActionInfo().setScene(request.new scene());
+        request.getActionInfo().getScene().setSceneStr("ScanReg_" + wxConfig.getMp().getAppId() + "_" + clientId);
+        MpQrCodeCreateResult response = wxService.createMpQrcodeCreate(result.getAccessToken(), request);
+
+        return objectConvertor.toGenerateMpRegCodeResponse(response);
+    }
 }

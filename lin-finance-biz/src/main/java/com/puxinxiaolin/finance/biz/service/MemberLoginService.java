@@ -1,9 +1,11 @@
 package com.puxinxiaolin.finance.biz.service;
 
 import com.puxinxiaolin.common.dto.TokenResponse;
+import com.puxinxiaolin.finance.biz.domain.Member;
 import com.puxinxiaolin.finance.biz.dto.form.GetBase64CodeForm;
 import com.puxinxiaolin.finance.biz.dto.form.GetSmsCodeForm;
 import com.puxinxiaolin.finance.biz.dto.form.PhonePasswordLoginForm;
+import com.puxinxiaolin.finance.biz.dto.form.PhoneSmsCodeLoginForm;
 
 public interface MemberLoginService {
 
@@ -55,4 +57,22 @@ public interface MemberLoginService {
      * @return
      */
     TokenResponse phonePasswordLogin(PhonePasswordLoginForm form);
+
+    /**
+     * 登录成功
+     *
+     * @param member
+     * @param clientId
+     * @return
+     */
+    TokenResponse loginSuccess(Member member, String clientId);
+
+    /**
+     * 手机号短信登录
+     *
+     * @param form
+     * @return
+     */
+    TokenResponse phoneSmsCodeLogin(PhoneSmsCodeLoginForm form);
+
 }

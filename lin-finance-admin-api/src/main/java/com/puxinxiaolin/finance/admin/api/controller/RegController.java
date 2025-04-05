@@ -1,7 +1,9 @@
 package com.puxinxiaolin.finance.admin.api.controller;
 
 import com.puxinxiaolin.common.dto.ApiResponse;
+import com.puxinxiaolin.finance.biz.dto.form.GenerateMpRegCodeForm;
 import com.puxinxiaolin.finance.biz.dto.form.PhoneRegisterForm;
+import com.puxinxiaolin.finance.biz.dto.vo.GenerateMpRegCodeVo;
 import com.puxinxiaolin.finance.biz.service.MemberRegService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +30,12 @@ public class RegController {
     @PostMapping("/phoneReg")
     public ApiResponse<Long> phoneReg(@Validated @RequestBody PhoneRegisterForm form) {
         return ApiResponse.success(memberRegService.phoneReg(form));
+    }
+
+    @ApiOperation(value = "生成微信公众号二维码（关注注册）")
+    @GetMapping("/generateMpRegCode")
+    public ApiResponse<GenerateMpRegCodeVo> generateMpRegCode(@Validated @ModelAttribute GenerateMpRegCodeForm form) {
+        return ApiResponse.success(memberRegService.generateMpRegCode(form.getClientId()));
     }
 
 }

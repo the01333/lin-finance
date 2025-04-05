@@ -5,6 +5,7 @@ import com.puxinxiaolin.common.dto.TokenResponse;
 import com.puxinxiaolin.finance.biz.dto.form.GetBase64CodeForm;
 import com.puxinxiaolin.finance.biz.dto.form.GetSmsCodeForm;
 import com.puxinxiaolin.finance.biz.dto.form.PhonePasswordLoginForm;
+import com.puxinxiaolin.finance.biz.dto.form.PhoneSmsCodeLoginForm;
 import com.puxinxiaolin.finance.biz.service.MemberLoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -68,6 +69,18 @@ public class LoginController {
     @PostMapping("/phonePasswordLogin")
     public ApiResponse<TokenResponse> phonePasswordLogin(@Validated @RequestBody PhonePasswordLoginForm form) {
         return ApiResponse.success(memberLoginService.phonePasswordLogin(form));
+    }
+
+    /**
+     * 手机号短信登录
+     *
+     * @param form
+     * @return
+     */
+    @ApiOperation(value = "手机号短信登录")
+    @PostMapping("/phoneSmsCodeLogin")
+    public ApiResponse<TokenResponse> phoneSmsCodeLogin(@Validated @RequestBody PhoneSmsCodeLoginForm form) {
+        return ApiResponse.success(memberLoginService.phoneSmsCodeLogin(form));
     }
 
 }

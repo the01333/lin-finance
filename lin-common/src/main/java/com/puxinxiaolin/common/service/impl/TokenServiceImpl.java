@@ -98,9 +98,9 @@ public class TokenServiceImpl<T extends BaseUserInfoDTO> implements TokenService
         }
 
         TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setExpire(securityConfig.getExpire());
         tokenResponse.setToken(UUID.randomUUID().toString());
         tokenResponse.setExpireDateTime(DateUtil.getExpireTimeStamp(securityConfig.getExpire(), TimeUnit.DAYS));
+        tokenResponse.setExpire(securityConfig.getExpire());
         tokenResponse.setTimeunit(TimeUnit.DAYS);
         T cacheToken = redisTemplate.opsForValue()
                 .get(CommonConstant.TOKEN_CACHE_KEY + tokenResponse.getToken());
@@ -210,9 +210,10 @@ public class TokenServiceImpl<T extends BaseUserInfoDTO> implements TokenService
                 || Strings.isBlank(user.getToken().getToken())) {
             return;
         }
+
         String key = CommonConstant.TOKEN_CACHE_KEY + user.getToken().getToken();
         redisTemplate.delete(key);
-        log.info("删除token：{}成功，用户id：{}", user.getToken().getToken(), user.getId());
+        log.info("删除token: {} 成功, 用户id: {}", user.getToken().getToken(), user.getId());
     }
 
 }
