@@ -1,5 +1,6 @@
 package com.puxinxiaolin.finance.admin.api.controller;
 
+import com.puxinxiaolin.wx.aes.AesException;
 import com.puxinxiaolin.wx.dto.MpCommonRequest;
 import com.puxinxiaolin.wx.service.WxMpEventService;
 import io.swagger.annotations.Api;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @Api(tags = "微信模块")
 @RestController
@@ -32,7 +34,7 @@ public class WxEventController {
     @RequestMapping(value = "/receiveMpEvent",
             method = {RequestMethod.POST, RequestMethod.GET})
     public String receiveMpEvent(@Validated @ModelAttribute MpCommonRequest mpCommonRequest,
-                                 HttpServletRequest httpServletRequest) {
+                                 HttpServletRequest httpServletRequest) throws AesException, IOException {
         return wxMpEventService.receiveMpEvent(mpCommonRequest, httpServletRequest);
     }
 
