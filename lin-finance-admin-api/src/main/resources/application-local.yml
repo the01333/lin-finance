@@ -34,9 +34,14 @@ redisson:
   password: root
 
 # wx
-# TODO: 微信公众号配置
 wx:
   mp:
-    appid: wx9e24917b9886a8df
-    secret: 98e75761afcc2fcbc13ffaadacb5ab06
+    # 下面的 appid 和 secret 是个体号的信息，不能通过微信认证
+#    appid: wx9e24917b9886a8df
+#    secret: 98e75761afcc2fcbc13ffaadacb5ab06
+    # 下面的是申请的测试的 appid 和 secret，可以生成二维码
+    appid: wx66eb4ba1e78feff0
+    secret: 333225363f6789756a61f24010dd4291
     codeExpire: 3600
+    token: puxinxiaolin
+    encodingAESKey:

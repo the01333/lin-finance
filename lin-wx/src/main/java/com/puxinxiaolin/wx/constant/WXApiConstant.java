@@ -18,5 +18,4 @@ public class WXApiConstant {
      * 详情见文档: https://developers.weixin.qq.com/doc/offiaccount/Account_Management/Generating_a_Parametric_QR_Code.html
      */
     public static final String MP_QRCODE_CREATE = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=%s";
-
 }

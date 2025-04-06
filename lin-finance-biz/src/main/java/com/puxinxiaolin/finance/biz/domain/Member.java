@@ -1,5 +1,8 @@
 package com.puxinxiaolin.finance.biz.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
 /**
@@ -7,6 +10,8 @@ import java.util.Date;
  *
  * @author YCcLin
  */
+@Setter
+@Getter
 public class Member {
     /**
      * 
@@ -57,86 +62,6 @@ public class Member {
      * 角色id，多个以英文逗号分隔
      */
     private String sysRoleIds;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public Boolean getDisable() {
-        return disable;
-    }
-
-    public void setDisable(Boolean disable) {
-        this.disable = disable;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Long getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(Long tenantId) {
-        this.tenantId = tenantId;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getSysRoleIds() {
-        return sysRoleIds;
-    }
-
-    public void setSysRoleIds(String sysRoleIds) {
-        this.sysRoleIds = sysRoleIds;
-    }
 
     public void initDefault() {
         if (this.getName() == null) {

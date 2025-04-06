@@ -10,6 +10,7 @@ public interface ObjectConvertor {
 
     /**
      * MpQrCodeCreateResult -> GenerateMpRegCodeVo
+     *
      * @param mpQrCodeCreateResult
      * @return
      */

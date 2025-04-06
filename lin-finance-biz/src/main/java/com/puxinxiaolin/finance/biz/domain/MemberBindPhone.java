@@ -1,5 +1,8 @@
 package com.puxinxiaolin.finance.biz.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
 /**
@@ -7,6 +10,8 @@ import java.util.Date;
  *
  * @author YCcLin
  */
+@Setter
+@Getter
 public class MemberBindPhone {
     /**
      * 
@@ -42,62 +47,6 @@ public class MemberBindPhone {
      * 是否禁用
      */
     private Boolean disable;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Boolean getDisable() {
-        return disable;
-    }
-
-    public void setDisable(Boolean disable) {
-        this.disable = disable;
-    }
 
     public void initDefault() {
         if (this.getMemberId() == null) {
