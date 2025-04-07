@@ -7,6 +7,8 @@ package com.puxinxiaolin.finance.biz.constant;
  */
 public class RedisKeyConstant {
 
+    public static final String CLIENT_TOKEN_KEY = "CLIENT_TOKEN_KEY:";
+
     // 图形验证码
     public static final String GRAPHIC_VERIFICATION_CODE = "GRAPHIC_VERIFICATION_CODE:";
 

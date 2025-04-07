@@ -1,10 +1,15 @@
 package com.puxinxiaolin.finance.biz.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.puxinxiaolin.common.dto.TokenResponse;
 import com.puxinxiaolin.common.exception.BizException;
 import com.puxinxiaolin.common.exception.ParameterException;
+import com.puxinxiaolin.common.service.TokenService;
 import com.puxinxiaolin.finance.biz.config.ObjectConvertor;
 import com.puxinxiaolin.finance.biz.constant.RedisKeyConstant;
 import com.puxinxiaolin.finance.biz.domain.MemberBindPhone;
+import com.puxinxiaolin.finance.biz.domain.MemberBindWxOpenId;
+import com.puxinxiaolin.finance.biz.dto.AdminDTO;
 import com.puxinxiaolin.finance.biz.dto.form.PhoneRegisterForm;
 import com.puxinxiaolin.finance.biz.dto.vo.GenerateMpRegCodeVo;
 import com.puxinxiaolin.finance.biz.enums.SmsCodeEnum;
@@ -13,15 +18,20 @@ import com.puxinxiaolin.wx.config.WxConfig;
 import com.puxinxiaolin.wx.dto.AccessTokenResult;
 import com.puxinxiaolin.wx.dto.MpQrCodeCreateRequest;
 import com.puxinxiaolin.wx.dto.MpQrCodeCreateResult;
+import com.puxinxiaolin.wx.dto.MpSubscribeEventRequest;
 import com.puxinxiaolin.wx.service.WXService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.context.event.EventListener;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -36,6 +46,9 @@ public class MemberRegServiceImpl implements MemberRegService {
     final WXService wxService;
     final WxConfig wxConfig;
     final ObjectConvertor objectConvertor;
+    final TokenService<AdminDTO> adminTokenService;
+    final RedisTemplate<String, Object> redisTemplate;
+    final MemberBindWxOpenIdService memberBindWxOpenIdService;
 
     /**
      * 手机号注册
@@ -104,5 +117,90 @@ public class MemberRegServiceImpl implements MemberRegService {
         MpQrCodeCreateResult response = wxService.createMpQrcodeCreate(result.getAccessToken(), request);
 
         return objectConvertor.toGenerateMpRegCodeResponse(response);
+    }
+
+    /**
+     * 处理微信公众号关注事件
+     *
+     * @param mpSubscribeEventRequest
+     */
+    @Override
+    @EventListener
+    public void handleMpSubscribeEventRequest(MpSubscribeEventRequest mpSubscribeEventRequest) {
+        if (log.isInfoEnabled()) {
+            log.info("MemberRegServiceImpl.handleMpSubscribeEventRequest.receives message:{}",
+                    JSON.toJSONString(mpSubscribeEventRequest));
+        }
+        log.info("MemberRegServiceImpl.handleMpSubscribeEventRequest.0:{}", mpSubscribeEventRequest.getEvent());
+
+        if ("subscribe".equals(mpSubscribeEventRequest.getEvent())
+                && StringUtils.isNotBlank(mpSubscribeEventRequest.getEventKey())) {
+            String[] keys = mpSubscribeEventRequest.getEventKey().split("_");
+            if ("qrcode".equals(keys[0]) && "ScanReg".equals(keys[1])) {
+                log.info("MemberRegServiceImpl.handleMpSubscribeEventRequest.keys.appId:{}, clientId:{}", keys[2], keys[3]);
+                registerByOpenId(keys[2], keys[3], mpSubscribeEventRequest.getToUserName());
+                return;
+            }
+        }
+
+        if ("SCAN".equals(mpSubscribeEventRequest.getEvent())
+                && StringUtils.isNotBlank(mpSubscribeEventRequest.getEventKey())) {
+            String[] keys = mpSubscribeEventRequest.getEventKey().split("_");
+            if ("ScanReg".equals(keys[0])) {
+                log.info("MemberRegServiceImpl.handleMpSubscribeEventRequest.keys.appId:{}, clientId:{}", keys[1], keys[2]);
+                registerByOpenId(keys[1], keys[2], mpSubscribeEventRequest.getToUserName());
+                return;
+            }
+        }
+
+    }
+
+    /**
+     * 通过openId注册
+     *
+     * @param appId
+     * @param clientId
+     * @param openId
+     * @return
+     */
+    @Override
+    public TokenResponse registerByOpenId(String appId, String clientId, String openId) {
+        Long memberId = scReg(appId, openId);
+        AdminDTO adminDTO = new AdminDTO();
+        adminDTO.setId(memberId);
+        adminTokenService.setToken(adminDTO);
+        redisTemplate.opsForValue()
+                .set(RedisKeyConstant.CLIENT_TOKEN_KEY + clientId,
+                        adminDTO.getToken(),
+                        10, TimeUnit.MINUTES);
+
+        return adminDTO.getToken();
+    }
+
+    /**
+     * 扫码注册
+     *
+     * @param appId
+     * @param openId
+     * @return 用户 ID
+     */
+    @Override
+    public Long scReg(String appId, String openId) {
+        MemberBindWxOpenId memberBindWxOpenId = memberBindWxOpenIdService.get(appId, openId);
+        if (Objects.nonNull(memberBindWxOpenId)) {
+            return memberBindWxOpenId.getMemberId();
+        }
+
+        Long memberId = transactionTemplate.execute(transactionStatus -> {
+            Long tenantId = tenantService.add();
+            Long id = memberService.reg(tenantId);
+            memberBindWxOpenIdService.reg(appId, openId);
+            return id;
+        });
+        if (Objects.isNull(memberId)) {
+            throw new BizException("注册失败");
+        }
+
+        return memberId;
     }
 }
