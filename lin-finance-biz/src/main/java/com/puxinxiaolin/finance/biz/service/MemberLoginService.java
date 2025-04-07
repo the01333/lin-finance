@@ -75,4 +75,12 @@ public interface MemberLoginService {
      */
     TokenResponse phoneSmsCodeLogin(PhoneSmsCodeLoginForm form);
 
+    /**
+     * 获取客户端 token
+     *
+     * @param clientId
+     * @return
+     */
+    TokenResponse getClientToken(String clientId);
+
 }

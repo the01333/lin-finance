@@ -214,4 +214,16 @@ public class MemberLoginServiceImpl implements MemberLoginService {
         Member member = memberService.get(memberByPhone.getMemberId());
         return loginSuccess(member, form.getClientId());
     }
+
+    /**
+     * 获取客户端 token
+     *
+     * @param clientId
+     * @return
+     */
+    @Override
+    public TokenResponse getClientToken(String clientId) {
+        return (TokenResponse) redisTemplate.opsForValue()
+                .get(RedisKeyConstant.CLIENT_TOKEN_KEY + clientId);
+    }
 }

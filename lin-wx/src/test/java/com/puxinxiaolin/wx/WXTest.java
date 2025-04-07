@@ -29,7 +29,8 @@ public class WXTest {
      * @return
      */
     private AccessTokenResult getMpAccessToken() {
-        AccessTokenResult accessTokenResult = wxService.getMpAccessToken("wx9e24917b9886a8df", "98e75761afcc2fcbc13ffaadacb5ab06");
+        AccessTokenResult accessTokenResult = wxService.getMpAccessToken("wx9e24917b9886a8df", "f5a1256586d75429efeb8ccb5fdd9d2b");
+//        AccessTokenResult accessTokenResult = wxService.getMpAccessToken("wx66eb4ba1e78feff0", "333225363f6789756a61f24010dd4291");
 
         return accessTokenResult;
     }

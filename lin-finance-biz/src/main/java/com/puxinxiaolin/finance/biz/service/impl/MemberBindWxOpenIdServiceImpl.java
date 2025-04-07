@@ -39,8 +39,9 @@ public class MemberBindWxOpenIdServiceImpl implements MemberBindWxOpenIdService 
      * @param openId
      */
     @Override
-    public Boolean reg(String appId, String openId) {
+    public Boolean reg(String appId, String openId, Long memberId) {
         MemberBindWxOpenId memberBindWxOpenId = new MemberBindWxOpenId();
+        memberBindWxOpenId.setMemberId(memberId);
         memberBindWxOpenId.setAppId(appId);
         memberBindWxOpenId.setOpenId(openId);
         memberBindWxOpenId.initDefault();

@@ -2,10 +2,7 @@ package com.puxinxiaolin.finance.admin.api.controller;
 
 import com.puxinxiaolin.common.dto.ApiResponse;
 import com.puxinxiaolin.common.dto.TokenResponse;
-import com.puxinxiaolin.finance.biz.dto.form.GetBase64CodeForm;
-import com.puxinxiaolin.finance.biz.dto.form.GetSmsCodeForm;
-import com.puxinxiaolin.finance.biz.dto.form.PhonePasswordLoginForm;
-import com.puxinxiaolin.finance.biz.dto.form.PhoneSmsCodeLoginForm;
+import com.puxinxiaolin.finance.biz.dto.form.*;
 import com.puxinxiaolin.finance.biz.service.MemberLoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -81,6 +78,18 @@ public class LoginController {
     @PostMapping("/phoneSmsCodeLogin")
     public ApiResponse<TokenResponse> phoneSmsCodeLogin(@Validated @RequestBody PhoneSmsCodeLoginForm form) {
         return ApiResponse.success(memberLoginService.phoneSmsCodeLogin(form));
+    }
+
+    /**
+     * 获取客户端token
+     *
+     * @param request
+     * @return
+     */
+    @ApiOperation(value = "获取客户端token")
+    @GetMapping(value = "/getClientToken")
+    public ApiResponse<TokenResponse> getClientToken(@Validated @ModelAttribute GetClientTokenForm request) {
+        return ApiResponse.success(memberLoginService.getClientToken(request.getClientId()));
     }
 
 }

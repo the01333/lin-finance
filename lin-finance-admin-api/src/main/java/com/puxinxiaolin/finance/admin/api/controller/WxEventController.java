@@ -4,6 +4,7 @@ import com.puxinxiaolin.wx.aes.AesException;
 import com.puxinxiaolin.wx.dto.MpCommonRequest;
 import com.puxinxiaolin.wx.service.WxMpEventService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +32,7 @@ public class WxEventController {
      * @param httpServletRequest
      * @return
      */
+    @ApiOperation(value = "接收微信事件推送")
     @RequestMapping(value = "/receiveMpEvent",
             method = {RequestMethod.POST, RequestMethod.GET})
     public String receiveMpEvent(@Validated @ModelAttribute MpCommonRequest mpCommonRequest,

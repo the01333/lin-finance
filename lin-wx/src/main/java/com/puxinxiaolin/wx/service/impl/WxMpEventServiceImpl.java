@@ -69,17 +69,18 @@ public class WxMpEventServiceImpl implements WxMpEventService {
                 log.info("WxMpEventServiceImpl.receiveMpEvent.mpTextEventRequest:{}", JSON.toJSONString(mpTextEventRequest));
             }
             log.info("WxMpEventServiceImpl.receiveMpEvent.mpTextEventRequest is pushed...");
+            // 事件发布机制: 根据传入的消息类型，后续在其他地方监听并处理（参数必须和这里传入的一致）
             applicationContext.publishEvent(mpTextEventRequest);
         }
         if ("event".equals(mpBaseEventRequest.getMsgType())) {
             MpSubscribeEventRequest mpSubscribeEventRequest = objectMapper.convertValue(obj, MpSubscribeEventRequest.class);
             if (log.isInfoEnabled()) {
-                log.info("WxMpEventServiceImpl.receiveMpEvent.mpSubscribeEventRequest:{}", JSON.toJSONString(mpSubscribeEventRequest));
+                log.info("WxMpEventServiceImpl.receiveMpEvent.mpSubscribeEventRequest:{}",
+                        JSON.toJSONString(mpSubscribeEventRequest));
             }
             log.info("WxMpEventServiceImpl.receiveMpEvent.mpSubscribeEventRequest is pushed...");
             applicationContext.publishEvent(mpSubscribeEventRequest);
         }
-
         log.info("WxMpEventServiceImpl.receiveMpEvent.push event finished!");
         return mpCommonRequest.getEchostr() == null ? "success" : mpCommonRequest.getEchostr();
     }

@@ -18,7 +18,9 @@ public interface MemberBindWxOpenIdService {
      *
      * @param appId
      * @param openId
+     * @param memberId
+     * @return
      */
-    Boolean reg(String appId, String openId);
+    Boolean reg(String appId, String openId, Long memberId);
 
 }

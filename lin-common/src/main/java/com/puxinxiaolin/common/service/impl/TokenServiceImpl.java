@@ -66,7 +66,8 @@ public class TokenServiceImpl<T extends BaseUserInfoDTO> implements TokenService
             throw new BizException("token非法");
         }
 
-        T userInfo = redisTemplate.opsForValue().get(CommonConstant.TOKEN_CACHE_KEY + token);
+        T userInfo = redisTemplate.opsForValue()
+                .get(CommonConstant.TOKEN_CACHE_KEY + token);
         if (Objects.isNull(userInfo)) {
             throw new BizException("token不存在或已过期");
         }

@@ -194,7 +194,7 @@ public class MemberRegServiceImpl implements MemberRegService {
         Long memberId = transactionTemplate.execute(transactionStatus -> {
             Long tenantId = tenantService.add();
             Long id = memberService.reg(tenantId);
-            memberBindWxOpenIdService.reg(appId, openId);
+            memberBindWxOpenIdService.reg(appId, openId, id);
             return id;
         });
         if (Objects.isNull(memberId)) {

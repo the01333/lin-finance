@@ -38,7 +38,7 @@ wx:
   mp:
     # 下面的 appid 和 secret 是个体号的信息，不能通过微信认证
 #    appid: wx9e24917b9886a8df
-#    secret: 98e75761afcc2fcbc13ffaadacb5ab06
+#    secret: f5a1256586d75429efeb8ccb5fdd9d2b
     # 下面的是申请的测试的 appid 和 secret，可以生成二维码
     appid: wx66eb4ba1e78feff0
     secret: 333225363f6789756a61f24010dd4291
