@@ -32,6 +32,12 @@ public class RegController {
         return ApiResponse.success(memberRegService.phoneReg(form));
     }
 
+    /**
+     * 生成微信公众号二维码（关注注册）
+     *
+     * @param form
+     * @return
+     */
     @ApiOperation(value = "生成微信公众号二维码（关注注册）")
     @GetMapping("/generateMpRegCode")
     public ApiResponse<GenerateMpRegCodeVo> generateMpRegCode(@Validated @ModelAttribute GenerateMpRegCodeForm form) {
