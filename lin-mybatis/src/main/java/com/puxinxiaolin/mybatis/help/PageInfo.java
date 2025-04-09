@@ -31,6 +31,9 @@ public class PageInfo<T> implements Serializable {
      */
     private Integer pages;
 
+    /**
+     * 结果集合
+     */
     private List<T> list;
 
     public PageInfo(int pageNum, int pageSize, int total, List<T> list) {

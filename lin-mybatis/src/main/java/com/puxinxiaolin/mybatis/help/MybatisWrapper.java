@@ -7,6 +7,11 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
+/**
+ * @Description: 动态构造条件，构造查询条件，参数，更新字段，动态拼接sql语句
+ * @Author: YCcLin
+ * @Date: 2025/4/9 14:53
+ */
 @Setter
 @Getter
 public class MybatisWrapper<T> {

@@ -5,6 +5,11 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * @Description: 拼接更新语句和更新参数，查询条件和查询参数
+ * @Author: YCcLin
+ * @Date: 2025/4/9 14:57
+ */
 @Getter
 public class FieldResult {
     @Setter

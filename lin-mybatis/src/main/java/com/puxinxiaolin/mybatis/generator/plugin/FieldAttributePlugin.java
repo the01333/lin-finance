@@ -42,7 +42,11 @@ public class FieldAttributePlugin extends PluginAdapter {
                     new FullyQualifiedJavaType("com.puxinxiaolin.mybatis.help.DbField"));
             field.setVisibility(JavaVisibility.PUBLIC);
             field.setStatic(true);
-            field.setInitializationString(String.format("new DbField(\"%s\",\"%s\",\"%s\",\"%s\")", column.getActualColumnName(), attrName, column.getJdbcTypeName(), column.getFullyQualifiedJavaType()));
+            field.setInitializationString(String.format("new DbField(\"%s\",\"%s\",\"%s\",\"%s\")",
+                    column.getActualColumnName(), attrName,
+                    column.getJdbcTypeName(),
+                    column.getFullyQualifiedJavaType())
+            );
             root.addField(field);
 
             Method setMethod = new Method("set" + field.getName());

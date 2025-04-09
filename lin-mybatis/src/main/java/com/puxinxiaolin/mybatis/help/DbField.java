@@ -2,6 +2,11 @@ package com.puxinxiaolin.mybatis.help;
 
 import lombok.Data;
 
+/**
+ * @Description: 数据库字段信息实体类
+ * @Author: YCcLin
+ * @Date: 2025/4/9 14:55
+ */
 @Data
 public class DbField {
 

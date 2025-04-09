@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @Description: 操作符构造查询条件，通过andEq，andGT等操作方法构造查询条件，将查询条件保存在criteria集合里面
+ * @Author: YCcLin
+ * @Date: 2025/4/9 14:58
+ */
 @Getter
 public abstract class GeneratedCriteria<T> {
 
